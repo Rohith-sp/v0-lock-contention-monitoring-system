@@ -7,25 +7,25 @@ Detailed technical decisions and implementation specifics for the lock contentio
 ### Statistical Distributions Used
 
 **Normal Operation (Gamma Distribution)**
-```python
+\`\`\`python
 avg_wait = np.random.gamma(shape=2, scale=5)
 # Shape=2, Scale=5 → Mean=10, Variance=50
 # Produces realistic right-skewed distribution
-```
+\`\`\`
 
 **Blocked Thread Percentage (Beta Distribution)**
-```python
+\`\`\`python
 blocked_pct = np.random.beta(alpha=2, beta=10) * 20
 # Alpha=2, Beta=10 → Skewed toward low values
 # Scaled to 0-20% range for normal operation
-```
+\`\`\`
 
 **Contention Frequency (Poisson Distribution)**
-```python
+\`\`\`python
 frequency = np.random.poisson(lambda=5)
 # Lambda=5 → Expected 5 events per window
 # Discrete count distribution
-```
+\`\`\`
 
 ### Why These Distributions?
 
@@ -37,11 +37,11 @@ frequency = np.random.poisson(lambda=5)
 
 ### Feature Standardization
 
-```python
+\`\`\`python
 scaler = StandardScaler()
 X_scaled = scaler.fit_transform(X)
 # Transforms: X' = (X - mean) / std
-```
+\`\`\`
 
 **Impact:**
 - Prevents large-magnitude features from dominating
@@ -50,14 +50,14 @@ X_scaled = scaler.fit_transform(X)
 
 ### Logistic Regression Configuration
 
-```python
+\`\`\`python
 LogisticRegression(
     max_iter=1000,           # Sufficient for convergence
     random_state=42,         # Reproducibility
     multi_class='ovr',       # One-vs-Rest strategy
     C=1.0                    # L2 regularization strength
 )
-```
+\`\`\`
 
 **Multi-class Strategy:**
 - One-vs-Rest: Trains 3 binary classifiers (HIGH vs rest, MEDIUM vs rest, LOW vs rest)
@@ -70,9 +70,9 @@ LogisticRegression(
 
 ### Train/Test Split
 
-```python
+\`\`\`python
 train_test_split(X, y, test_size=0.2, stratify=y)
-```
+\`\`\`
 
 - 80/20 split: Industry standard for medium datasets
 - Stratified: Maintains class distribution in both sets
@@ -82,9 +82,9 @@ train_test_split(X, y, test_size=0.2, stratify=y)
 
 ### Terminal Clearing
 
-```python
+\`\`\`python
 os.system('clear' if os.name != 'nt' else 'cls')
-```
+\`\`\`
 
 - `os.name == 'nt'`: Windows detection
 - `clear`: Unix/Linux/Mac terminal command
@@ -92,10 +92,10 @@ os.system('clear' if os.name != 'nt' else 'cls')
 
 ### ANSI Color Codes
 
-```python
+\`\`\`python
 RED = '\033[91m'
 RESET = '\033[0m'
-```
+\`\`\`
 
 - ANSI escape sequences for terminal colors
 - `\033[` starts escape sequence
@@ -104,14 +104,14 @@ RESET = '\033[0m'
 
 ### Metric Color Coding
 
-```python
+\`\`\`python
 def _get_metric_color(value, warn_threshold, critical_threshold):
     if value >= critical_threshold:
         return Colors.RED
     elif value >= warn_threshold:
         return Colors.YELLOW
     return Colors.GREEN
-```
+\`\`\`
 
 **Thresholds chosen based on:**
 - Normal operation: < 50ms avg wait
@@ -122,7 +122,7 @@ def _get_metric_color(value, warn_threshold, critical_threshold):
 
 ### Temporal Evolution
 
-```python
+\`\`\`python
 # Gradual drift
 base_multiplier = np.random.uniform(0.9, 1.1)
 
@@ -133,7 +133,7 @@ if iteration % 5 == 0:
 # Relief event (every 20 iterations)
 if iteration % 20 == 0:
     base_multiplier = np.random.uniform(0.3, 0.6)
-```
+\`\`\`
 
 **Simulates realistic patterns:**
 - Gradual system load increases
@@ -142,10 +142,10 @@ if iteration % 20 == 0:
 
 ### Lock Distribution (Pareto)
 
-```python
+\`\`\`python
 weights = np.random.pareto(2, size=5) + 1
 weights = weights / weights.sum()
-```
+\`\`\`
 
 **Why Pareto?**
 - Models "80/20 rule": Few locks cause most contention
@@ -156,10 +156,10 @@ weights = weights / weights.sum()
 
 ### Pickle Format
 
-```python
+\`\`\`python
 with open('model.pkl', 'wb') as f:
     pickle.dump(model, f)
-```
+\`\`\`
 
 **Alternatives:**
 - joblib: Better for large numpy arrays
@@ -175,19 +175,19 @@ with open('model.pkl', 'wb') as f:
 
 ### Prediction Speed
 
-```python
+\`\`\`python
 features_scaled = scaler.transform(features)  # ~10μs
 prediction = model.predict(features_scaled)    # ~100μs
 probabilities = model.predict_proba(features)  # ~200μs
-```
+\`\`\`
 
 Total prediction time: <1ms (suitable for real-time)
 
 ### Dashboard Refresh Strategy
 
-```python
+\`\`\`python
 time.sleep(interval)  # Default: 2 seconds
-```
+\`\`\`
 
 **Trade-offs:**
 - Faster: More responsive, higher CPU usage
@@ -199,24 +199,24 @@ time.sleep(interval)  # Default: 2 seconds
 
 ### Graceful Degradation
 
-```python
+\`\`\`python
 try:
     self.predictor = ContentionPredictor()
     return True
 except FileNotFoundError:
     print("Warning: Model not found...")
     return False
-```
+\`\`\`
 
 Monitor continues without predictions if model unavailable.
 
 ### Keyboard Interrupt
 
-```python
+\`\`\`python
 except KeyboardInterrupt:
     print("Monitoring stopped.")
     sys.exit(0)
-```
+\`\`\`
 
 Clean exit on Ctrl+C (standard Unix behavior).
 
@@ -236,14 +236,14 @@ Clean exit on Ctrl+C (standard Unix behavior).
 
 ### Class Design
 
-```python
+\`\`\`python
 class ContentionPredictor:
     def __init__(self, model_path, scaler_path, metadata_path):
         # Load resources once
         
     def predict(self, metrics):
         # Pure function: metrics → prediction
-```
+\`\`\`
 
 **Design principles:**
 - Encapsulation: Hide internal model details
@@ -254,14 +254,14 @@ class ContentionPredictor:
 
 ### Manual Testing
 
-```python
+\`\`\`python
 if __name__ == '__main__':
     # Test code at module level
     predictor = ContentionPredictor()
     test_metrics = {...}
     risk, probs = predictor.predict(test_metrics)
     print(f"Test prediction: {risk}")
-```
+\`\`\`
 
 Each module has `__main__` test block.
 
@@ -277,10 +277,10 @@ Each module has `__main__` test block.
 
 ### Pickle Safety
 
-```python
+\`\`\`python
 with open(model_path, 'rb') as f:
     model = pickle.load(f)
-```
+\`\`\`
 
 **Warning:** pickle can execute arbitrary code
 - Only load models from trusted sources
@@ -317,13 +317,13 @@ with open(model_path, 'rb') as f:
 
 ### Development
 
-```bash
+\`\`\`bash
 python scripts/run_complete_system.py
-```
+\`\`\`
 
 ### Production (Hypothetical)
 
-```bash
+\`\`\`bash
 # Background monitoring with logging
 python scripts/cli_monitor.py --interval 5 > logs/monitor.log 2>&1 &
 
@@ -334,17 +334,17 @@ Description=Lock Contention Monitor
 [Service]
 ExecStart=/usr/bin/python3 /opt/monitor/cli_monitor.py
 Restart=always
-```
+\`\`\`
 
 ### Docker (Future)
 
-```dockerfile
+\`\`\`dockerfile
 FROM python:3.11-slim
 WORKDIR /app
 COPY scripts/ /app/scripts/
 RUN pip install numpy pandas scikit-learn
 CMD ["python", "scripts/run_complete_system.py"]
-```
+\`\`\`
 
 ## References
 

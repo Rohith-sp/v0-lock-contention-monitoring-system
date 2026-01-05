@@ -20,7 +20,7 @@ This system demonstrates a practical approach to runtime lock contention monitor
 
 ## System Architecture
 
-```
+\`\`\`
 ┌─────────────────────────────────────────────────────────────┐
 │                    CLI Monitor Dashboard                     │
 │  (Live metrics, top locks, predicted risk, visual display)  │
@@ -37,23 +37,23 @@ This system demonstrates a practical approach to runtime lock contention monitor
 │               Backend Monitoring Simulator                   │
 │         (Generate realistic contention metrics)             │
 └─────────────────────────────────────────────────────────────┘
-```
+\`\`\`
 
 ## Quick Start
 
 ### Prerequisites
 
-```bash
+\`\`\`bash
 pip install numpy pandas scikit-learn
-```
+\`\`\`
 
 ### Run Complete System
 
 The easiest way to run everything:
 
-```bash
+\`\`\`bash
 python scripts/run_complete_system.py
-```
+\`\`\`
 
 This will:
 1. Generate 1000 samples of lock contention data
@@ -63,23 +63,23 @@ This will:
 ### Run Individual Components
 
 **1. Generate Dataset**
-```bash
+\`\`\`bash
 python scripts/generate_dataset.py
-```
+\`\`\`
 
 Outputs: `lock_contention_dataset.csv`
 
 **2. Train Model**
-```bash
+\`\`\`bash
 python scripts/train_model.py
-```
+\`\`\`
 
 Outputs: `model.pkl`, `scaler.pkl`, `model_metadata.pkl`
 
 **3. Launch Monitor**
-```bash
+\`\`\`bash
 python scripts/cli_monitor.py --interval 2
-```
+\`\`\`
 
 Press Ctrl+C to stop monitoring.
 
@@ -154,7 +154,7 @@ All features are standardized (mean=0, std=1) before training to ensure:
 
 ## Example Terminal Output
 
-```
+\`\`\`
 ======================================================================
   LOCK CONTENTION MONITOR
   2025-01-05 14:32:15
@@ -185,7 +185,7 @@ PREDICTED CONTENTION RISK
 
 ──────────────────────────────────────────────────────────────────────
   Press Ctrl+C to stop monitoring
-```
+\`\`\`
 
 ## Technical Decisions
 
@@ -248,7 +248,7 @@ In production, replace the simulator with real lock instrumentation (e.g., eBPF 
 
 ## Project Structure
 
-```
+\`\`\`
 .
 ├── scripts/
 │   ├── generate_dataset.py      # Dataset generation
@@ -261,7 +261,7 @@ In production, replace the simulator with real lock instrumentation (e.g., eBPF 
 ├── scaler.pkl                    # Feature scaler
 ├── model_metadata.pkl            # Label encoder & metadata
 └── README.md                     # This file
-```
+\`\`\`
 
 ## Performance Characteristics
 
